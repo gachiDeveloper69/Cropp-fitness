@@ -459,6 +459,25 @@ h1, h2, h3, h4, h5, h6 {
   background-color: var(--color-light);
 }
 
+.motivation-card {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  column-gap: clamp(30px, 10.41vh, 200px);
+}
+
+.motivation-item:nth-child(even) {
+  background-color: var(--color-dark-alternate);
+}
+
+.motivation-item:nth-child(even) .motivation-card {
+  flex-direction: row-reverse;
+}
+
+.motivation-card-image {
+  margin-block: -60px;
+}
+
 @media (max-width: 1024px) {
     .header {
         flex-wrap: wrap;
