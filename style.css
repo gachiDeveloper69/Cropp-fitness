@@ -97,6 +97,10 @@
  
    margin-block: 0;
  }
+
+ p:not([class]):not(:last-child) {
+  margin-bottom: 24px;
+ }
  
  /**
    Внешний отступ вниз для параграфа без атрибута class,
@@ -305,6 +309,41 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
 }
 
+.title-medium {
+  font-size: clamp(20px, 2.08vw, 40px);
+  line-height: 1.3;
+  color: var(--color-light);
+}
+
+.backdrop-title {
+  position: relative;
+  z-index: 2;
+}
+
+.backdrop-title::before {
+  content: '';
+  display: block;
+  position: absolute;
+  right: calc(100% + 0px);
+  top: -7px;
+  width: 26px;
+  aspect-ratio: 1;
+  background: url(./icons/plus.svg) center/contain no-repeat;
+}
+
+.backdrop-title::after { 
+  position: absolute;
+  z-index: -1;
+  top: -0.45em;
+  left: -0.6em;
+  font-family: var(--font-family-accent);
+  content: attr(data-title);
+  color: transparent;
+  -webkit-text-stroke: 0.5px var(--color-light-gray);
+  text-stroke: 1px var(--color-light-gray);
+  font-size: 2.8em; /* 112px из макета / 40px размер шрифта родит. эл-та backdrop-title */
+}
+
 .button {
     display: inline-flex;
     align-items: center;
@@ -315,10 +354,36 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 2;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    text-decoration: none;
     background-color: var(--color-light);
     border: none;
     border-radius: var(--border-radius);
     white-space: nowrap;
+}
+
+.button.transparent {
+  position: relative;
+  height: var(--input-height);
+  padding-block: 14px;
+  padding-left: 31px;
+  padding-right: 81px;
+  background-color: transparent;
+  border: var(--border);
+}
+
+.button.transparent::after {
+  position: absolute;
+  right: 0;
+  content: '';
+  height: 100%;
+  aspect-ratio: 1;
+  background: url(./icons/arrow-top-righw.svg) center/contain no-repeat;
+  border: var(--border);
+  border-radius: 50%;
+}
+
+.button.transparent:hover {
+  color: var(--color-dark);
 }
 
 .header {
@@ -466,6 +531,11 @@ h1, h2, h3, h4, h5, h6 {
   column-gap: clamp(30px, 10.41vh, 200px);
 }
 
+.motivation-card-description {
+  max-width: 400px;
+
+}
+
 .motivation-item:nth-child(even) {
   background-color: var(--color-dark-alternate);
 }
@@ -476,6 +546,24 @@ h1, h2, h3, h4, h5, h6 {
 
 .motivation-card-image {
   margin-block: -60px;
+}
+
+.motivation-card-body {
+  margin-left: 35px;
+}
+
+.motivation-card-title:not(:last-child) {
+  margin-bottom: 14px;
+}
+
+.motivation-card-description:not(:last-child) {
+  margin-bottom: 14px;
+}
+
+@media (max-width: 1919px) {
+  .motivation-card-image {
+    margin-block: -20px;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -496,6 +584,16 @@ h1, h2, h3, h4, h5, h6 {
     }
     .header-menu-link {
         height: 50px;
+    }
+
+    .motivation-card {
+      padding-block: 50px;
+    }
+
+    .motivation-card-image {
+      max-width: 30%;
+      margin-block: 0px;
+      height: auto;
     }
 }
 
@@ -520,6 +618,21 @@ h1, h2, h3, h4, h5, h6 {
     }
     .banner-info::before{
       margin-right: 10px;
+    }
+
+    .motivation-card,
+    .motivation-item:nth-child(even) .motivation-card {
+      flex-direction: column-reverse;
+      padding-block: 30px;
+      row-gap: 30px;
+    }
+
+    .motivation-card-image {
+      max-width: 60%;
+    }
+
+    motivation-card-description:not(:last-child) {
+      margin-bottom: 20px;
     }
 }
 
