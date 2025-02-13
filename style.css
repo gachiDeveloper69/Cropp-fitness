@@ -581,6 +581,7 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
   align-items:center;
   row-gap: 32px;
+  max-width: 240px;
 }
 
 .training-types-item-title {
@@ -594,10 +595,75 @@ h1, h2, h3, h4, h5, h6 {
 .training-types-item::before {
   content: '';
   width: 80px;
+  height: auto;
   aspect-ratio: 1;
-  background: url(./icons/transpar-arrow-down-left.svg) 100% 0/80px no-repeat;
+  background: url(./icons/transpar-arrow-down-left.svg) center/contain no-repeat;
   align-self: flex-end;
   margin-bottom: -32px;
+}
+
+.join-us-video-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url(./images/join-bg.jpg) center/cover no-repeat var(--color-dark-alternate) /*цвет-фоллбэк для фона*/;
+  padding: 150px 30px;
+}
+
+.join-us-video-play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  /*по центру по всем осям*/
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 4px;
+  width: 200px;
+  aspect-ratio: 1;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  background-color: transparent;
+  border: 1px solid #000000;
+  border-radius: 50%;
+}
+
+.join-us-video-play-button::after {
+  content: '';
+  width: 26px;
+  aspect-ratio: 1;
+  transition-duration: var(--transition-duration);
+  background: url(./icons/arrow-top-righw-black.svg) center/contain no-repeat;
+}
+
+.join-us-video-play-button:hover {
+  color: gray;
+  border-color: gray;
+}
+
+.join-us-video-play-button:hover::after {
+  filter: invert(1);
+}
+
+.join-us-title {
+  position: relative;
+  margin-top: -0.4em;
+  font-size: clamp(64px, 9.37vw, 180px);
+  line-height: 1;
+  text-align: center;
+}
+
+.join-us-title::after {
+  content: '';
+  display: inline-block;
+  height: 0.75em;
+  margin-left: 0.14em;
+  aspect-ratio: 1;
+  background: url(./icons/bold-arrow-down-right.svg) center/contain no-repeat;
+  scale: 1 -1; /*отразить по вертикали*/
 }
 
 @media (max-width: 1919px) {
@@ -694,6 +760,7 @@ h1, h2, h3, h4, h5, h6 {
 
     .training-types-item::before {
       margin-bottom: -10px;
+      width: 60px;
     }
 
     .training-types-image {
