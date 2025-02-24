@@ -414,8 +414,10 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: var(--border-radius);
 }
 
-.input::placeholder {
-  color: var(--color-light-gray);
+.input::placeholder,
+select.input:invalid
+{
+  color: rgb(109, 108, 108);
 }
 
 .input:hover {
@@ -428,6 +430,18 @@ h1, h2, h3, h4, h5, h6 {
   outline: none;
   background-color: rgb(185, 183, 183);
   transition: var(--transition-duration);
+}
+
+/* Убираем стрелочки Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Убираем стрелочки Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 
 .header {
@@ -815,6 +829,51 @@ h1, h2, h3, h4, h5, h6 {
   width: auto;
 }
 
+
+.calculate {
+  padding-block: 146px;
+  background-color: var(--color-dark-alternate);
+}
+
+.calculate-inner {
+  display: flex;
+  align-items: center;
+  column-gap: 36px;
+}
+
+.calculate-body {
+  flex-grow: 1;
+  max-width: 627px;
+}
+
+.calculate-title:not(:last-child) {
+  margin-bottom: 16px;
+}
+
+.calculate-descr:not(:last-child) {
+  margin-bottom: 30px;
+  max-width: 385px;
+}
+
+.calculate-form-body {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px 30px;
+}
+
+.calculate-input.wide {
+  grid-column: -1 / 1;/*чтобы растянуть на всю ширину */
+}
+
+.calculate-form-body:not(:last-child) {
+  margin-bottom: 26px;
+}
+
+.calculate-table-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 610px;
+}
 
 @media (max-width: 1919px) {
   .motivation-card-image {
