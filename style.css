@@ -817,18 +817,37 @@ input[type=number] {
 }
 
 .family-body {
+  overflow: hidden; /* Скрываем лишние элементы */
+  position: relative;
+}
+
+.slider {
+  width: 100%;
+  overflow: hidden; /* Скрываем всё, что выходит за пределы контейнера */
+  position: relative;
+  background-color: transparent;
+}
+
+.slider-wrapper {
   display: flex;
-  justify-content: center;
-  column-gap: 26px;
-  scroll-snap-type: x mandatory;/*слайдер*/
-  overflow-x: scroll;/*чтобы элементы скроллились*/
+  column-gap: 26px;  /*Расстояние между слайдами*/
+  cursor: grab;
+  user-select: none;
+  overflow-x: scroll;
+  scroll-behavior: smooth;
+  background-color: transparent;
+}
+
+.slider-wrapper::-webkit-scrollbar {
+  display: none; /* Для Chrome, Safari и Edge */
 }
 
 .family-image {
-  scroll-snap-align: start;/*привязка при скролле в начале*/
+  max-height: 480px;
   width: auto;
+  flex-shrink: 0;
+  background-color: transparent;
 }
-
 
 .calculate {
   padding-block: 146px;
@@ -873,6 +892,22 @@ input[type=number] {
   position: relative;
   width: 100%;
   max-width: 610px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.calculate-table-wrapper::before {
+  content: '';
+  position: absolute;
+  /*связка для размещения эл-та по центру родительского эл-та*/
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: 100%;
+  aspect-ratio: 1;
+  background-color: var(--color-dark);
+  border-radius: 50%;
 }
 
 @media (max-width: 1919px) {
@@ -897,6 +932,11 @@ input[type=number] {
     .banner {
       padding-inline: 15px;
       row-gap: 10px;
+    }
+
+    .banner {
+      padding-block: 30px;
+      justify-content: center;
     }
 
     .header-menu {
@@ -1036,7 +1076,7 @@ input[type=number] {
     row-gap: 7px;
   }
 
-  .family-body {
+  .slider-wrapper {
     column-gap: 16px;
   }
 }
