@@ -825,7 +825,6 @@ input[type=number] {
   width: 100%;
   overflow: hidden; /* Скрываем всё, что выходит за пределы контейнера */
   position: relative;
-  background-color: transparent;
 }
 
 .slider-wrapper {
@@ -835,7 +834,6 @@ input[type=number] {
   user-select: none;
   overflow-x: scroll;
   scroll-behavior: smooth;
-  background-color: transparent;
 }
 
 .slider-wrapper::-webkit-scrollbar {
@@ -846,7 +844,6 @@ input[type=number] {
   max-height: 480px;
   width: auto;
   flex-shrink: 0;
-  background-color: transparent;
 }
 
 .calculate {
@@ -904,10 +901,66 @@ input[type=number] {
   top: 50%;
   left: 50%;
   translate: -50% -50%;
+
   width: 100%;
   aspect-ratio: 1;
   background-color: var(--color-dark);
   border-radius: 50%;
+}
+
+.calculate-table {
+  position: relative;
+  border-collapse: collapse;/*убирает невидимые границы между ячейками секции*/
+}
+
+.calculate-table :is(td, th):first-child {/*Обращение сразу к двум тегам, только ячейки первого столбца*/
+  padding-right: 30px;
+}
+
+.calculate-table :is(td, th):not(:first-child) {/*все ячейки кроме первого столбца*/
+  padding-left: 30px;
+}
+
+.calculate-table :is(td, th):not(:last-child) {
+  border-right: 1px solid var(--color-light-gray);
+}
+
+.calculate-table tbody td {
+  border-top: 1px solid var(--color-light-gray);
+}
+
+.calculate-table tbody tr:last-child td:first-child {
+  position: relative;
+}
+
+.calculate-table tbody tr:last-child td:first-child::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 70%;
+  height: 1px;
+  background-color: var(--color-light-gray);
+}
+
+.calculate-table th {
+  padding-block: 20px;
+  text-align: left;
+  text-transform: uppercase;
+  color: var(--color-light);
+}
+
+.calculate-table td {
+  padding-block: 14px;
+}
+
+.calculate-table tfoot {
+  color: var(--color-light);
+}
+
+.calculate-table tfoot td {
+  padding-top: 33px;
+  padding-bottom: 1px;
 }
 
 @media (max-width: 1919px) {
