@@ -963,6 +963,127 @@ input[type=number] {
   padding-bottom: 1px;
 }
 
+.footer {
+  --footerLogoWidth: 20.77%;
+}
+
+.footer-main {
+  padding-top: 140px;
+  padding-bottom: 160px;
+}
+
+.footer-header,
+.footer-body {
+  display: grid;
+  column-gap: 62.5px;
+}
+
+.footer-header {
+    grid-template-columns: var(--footerLogoWidth) auto;
+}
+
+.footer-header:not(:last-child) {
+  margin-bottom: 60px;
+}
+
+
+.footer-column-title {
+  font-size: clamp(18px, 1.15vw, 22px);
+}
+
+.footer-column-title:not(:last-child) {
+  margin-bottom: 15px;
+}
+
+.footer-about {
+  line-height: 100%
+}
+
+.footer-about:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.footer-descr {
+  text-align: left;
+}
+
+.footer-schedule:not(:last-child) {
+  margin-bottom: 13px;
+}
+
+.footer-adress:not(:last-child) {
+  display: block;
+  margin-bottom: 35px;
+}
+
+.footer-body {
+  grid-template-columns: var(--footerLogoWidth) repeat(3, 1fr);
+}
+
+.footer-column-title.has-arrow::after {
+  content: '';
+  display: inline-block;
+  height: 0.74em;
+  margin-left: 0.5em;
+  aspect-ratio: 1;
+  background: url(./icons/bold-arrow-down-right.svg) center / contain no-repeat;
+  scale: -1 1;
+}
+
+.footer-subscribe {
+  position: relative;
+}
+
+.footer-subscribe:not(:last-child) {
+  margin-bottom: 50px;
+}
+
+.footer-subscribe-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  aspect-ratio: 1;
+  background: url(./icons/arrow-top-righw.svg) center / contain no-repeat;
+  border: var(--border);
+  border-radius: 50%;
+}
+
+.footer-subscribe-button:hover {
+  background-color: gray;
+  transition: var(--transition-duration);
+}
+
+.footer-subscribe-input {
+  padding-right: 60px;/*чтобы ввод н еуплывал на стрелочку с кнопкой*/
+}
+
+.footer-soc1als-list {
+  display: flex;
+  column-gap: 19px;
+}
+
+.footer-soc1als-item {
+  width: 22px;
+  height: 21px;
+  filter: invert(1); /*инвертировать цвет*/
+}
+
+.footer-extra {
+  height: 52px;
+  font-size: 14px;
+  padding-bottom: 15px;
+  padding-left: 310px;
+  background-color: var(--color-dark-alternate);
+}
+
+.footer-logo-image {
+  width: clamp(135px, 14.063vw, 270px) 270px;
+  height: auto;
+}
+
+
+
 @media (max-width: 1919px) {
   .motivation-card-image {
     margin-block: -20px;
@@ -1027,6 +1148,47 @@ input[type=number] {
   .family-image {
     height: 360px;
   }
+
+  .calculate {
+    padding-block: 100px;
+  }
+
+  .calculate-form-body {
+    grid-template-columns: 1fr;
+  }
+
+  .calculate-form-button {
+    width: 100%;
+  }
+  
+  .calculate-inner {
+    column-gap: 20px;
+  }
+
+  .calculate-table :is(td,th) {
+    padding-block: 10px;
+  }
+
+  .calculate-table tfoot td {
+    padding-top: 10px;
+  }
+
+  .footer-main {
+    padding-top: 50px;
+    padding-bottom: 50px;
+  }
+
+  .footer-body {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 30px;
+  }
+
+  .footer-header {
+    display: flex;
+    flex-direction: column;
+    column-gap: 30px;
+  }
+
 }
 
 @media (max-width: 767px) {
@@ -1132,6 +1294,32 @@ input[type=number] {
   .slider-wrapper {
     column-gap: 16px;
   }
+
+  .calculate {
+    padding-block: 60px;
+  }
+
+  .calculate-inner {
+    flex-direction: column;
+    row-gap: 30px;
+  }
+
+  .calculate-table-wrapper::before {
+    display: none;
+  }
+
+  .footer-body {
+    grid-template-columns: 1fr;
+    row-gap: 30px;
+  }
+
+  .footer-header:not(:last-child) {
+    margin-bottom: 30px;
+  }
+
+  .footer-subscribe:not(:last-child) {
+    margin-bottom: 40px;
+}
 }
 
 /* Фикс залипания при наведении на тач устройстве */
