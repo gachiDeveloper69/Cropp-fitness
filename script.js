@@ -131,3 +131,56 @@ slider.addEventListener("touchend", dragEnd);
 slider.addEventListener("scroll", () => {
   if (!isDragging) checkInfiniteScroll();
 });
+
+
+//пагинация картинок в секции banner
+
+
+document.addEventListener('DOMContentLoaded', function () {
+  const content = document.querySelector('.banner-images-list'); 
+  const itemsPerPage = 1; // set number of items per page
+  let currentPage = 0;
+  const items = Array.from(content.getElementsByTagName('li')); // tag name set to section and slice set to 0
+  console.log(items);
+  console.log(currentPage);
+
+function showPage(page) {
+  const startIndex = page * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  items.forEach((item, index) => {
+    item.classList.toggle('visually-hidden', index < startIndex || index >= endIndex);
+  });
+  //updateActiveButtonStates();
+}
+function setPageButtons() {
+  const totalPages = Math.ceil(items.length / itemsPerPage);
+  const buttonsContainer = document.querySelector('.banner-pagination-list');
+  const pageButtons = Array.from(buttonsContainer.getElementsByTagName('li'));
+  //const paginationContainer = document.createElement('div');
+  //const paginationDiv = document.body.appendChild(paginationContainer);
+  //paginationContainer.classList.add('pagination');
+
+  // Set page buttons
+  for (let i = 0; i < totalPages; i++) {
+    const currButton = pageButtons[i];
+    currButton.addEventListener('click', () => {
+      currentPage = i;
+      showPage(currentPage);
+      updateActiveButtonStates();
+    });
+  }
+}
+
+function updateActiveButtonStates() {
+  const pageButtons = document.querySelectorAll('.banner-pagination-button');
+  pageButtons.forEach((button, index) => {
+    if (index === currentPage) {
+      button.classList.add('is-current');
+    } else {
+      button.classList.remove('is-current');
+    }
+  });
+}
+  setPageButtons(); // Call this function to create the page buttons initially
+  showPage(currentPage);
+});

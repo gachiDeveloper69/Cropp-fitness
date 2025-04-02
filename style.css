@@ -517,15 +517,41 @@ input[type=number] {
   flex-direction: column;
   justify-content: end;
   padding-inline: 36px;
-  padding-block: 70px;
+  /* padding-block: 70px; */
   
   min-height: calc(100vh - var(--header-height));
   color: var(--color-light);
   background-color: var(--color-dark-alternate);
+
+  --banner-height: 1017px;
 } 
 
 .banner-body {
   text-transform: uppercase;
+  min-height: var(--banner-height);
+  position: relative;
+}
+
+.banner-images-list {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
+.banner-images-item {
+  width: 854px;/*571*/
+  height: var(--banner-height);/*680*/
+  z-index: -10;
+  display: block;
+  margin-bottom: -20px;
+}
+
+.banner-text {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  translate: -50% 0%;
 }
 
 .banner-info {
@@ -547,6 +573,13 @@ input[type=number] {
 .banner-title {
   font-size: min(18.75vw, 360px);
   line-height: 1;
+}
+
+.banner-pagination {
+  position: absolute;
+  bottom: 2%;
+  left: 50%;
+  translate: -50%
 }
 
 .banner-pagination-list {
@@ -586,7 +619,7 @@ input[type=number] {
   display: flex;
   justify-content: start;
   align-items: center;
-  column-gap: clamp(30px, 10.41vh, 200px);
+  column-gap: clamp(60px, 30.4vh, 200px);
 }
 
 .motivation-card-description {
@@ -1111,6 +1144,15 @@ input[type=number] {
     .banner {
       padding-block: 30px;
       justify-content: center;
+      --banner-height: 680px;
+    }
+
+    .banner-images-item {
+      width: 571px;/*571*/
+      height: var(--banner-height);/*680*/
+      z-index: -10;
+      display: block;
+      margin-bottom: -20px;
     }
 
     .header-menu {
@@ -1188,6 +1230,7 @@ input[type=number] {
     flex-direction: column;
     column-gap: 30px;
   }
+
 
 }
 
