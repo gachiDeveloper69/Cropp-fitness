@@ -134,53 +134,59 @@ slider.addEventListener("scroll", () => {
 
 
 //пагинация картинок в секции banner
-
-
 document.addEventListener('DOMContentLoaded', function () {
-  const content = document.querySelector('.banner-images-list'); 
-  const itemsPerPage = 1; // set number of items per page
+  const content = document.querySelector('.banner-images-list');
+  const items = Array.from(content.getElementsByTagName('li'));
+  const buttons = document.querySelectorAll('.banner-pagination-button');
   let currentPage = 0;
-  const items = Array.from(content.getElementsByTagName('li')); // tag name set to section and slice set to 0
-  console.log(items);
-  console.log(currentPage);
+  let intervalId;
 
-function showPage(page) {
-  const startIndex = page * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  items.forEach((item, index) => {
-    item.classList.toggle('visually-hidden', index < startIndex || index >= endIndex);
-  });
-  //updateActiveButtonStates();
-}
-function setPageButtons() {
-  const totalPages = Math.ceil(items.length / itemsPerPage);
-  const buttonsContainer = document.querySelector('.banner-pagination-list');
-  const pageButtons = Array.from(buttonsContainer.getElementsByTagName('li'));
-  //const paginationContainer = document.createElement('div');
-  //const paginationDiv = document.body.appendChild(paginationContainer);
-  //paginationContainer.classList.add('pagination');
+  function showPage(newPage) {
+    if (newPage === currentPage) return;
 
-  // Set page buttons
-  for (let i = 0; i < totalPages; i++) {
-    const currButton = pageButtons[i];
-    currButton.addEventListener('click', () => {
-      currentPage = i;
-      showPage(currentPage);
-      updateActiveButtonStates();
+    const prevItem = items[currentPage];
+    const nextItem = items[newPage];
+
+    prevItem.classList.remove('is-active');
+    prevItem.classList.add('hidden');
+
+    nextItem.classList.add('is-active');
+    nextItem.classList.remove('hidden');
+
+    currentPage = newPage;
+    updateActiveButtonStates();
+  }
+
+  function updateActiveButtonStates() {
+    buttons.forEach((button, index) => {
+      button.classList.toggle('is-current', index === currentPage);
     });
   }
-}
 
-function updateActiveButtonStates() {
-  const pageButtons = document.querySelectorAll('.banner-pagination-button');
-  pageButtons.forEach((button, index) => {
+  buttons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      clearInterval(intervalId); // сбросить авто-перелистывание при ручном клике
+      showPage(index);
+      startAutoSlide(); // перезапустить
+    });
+  });
+
+  function startAutoSlide() {
+    intervalId = setInterval(() => {
+      const nextPage = (currentPage + 1) % items.length;
+      showPage(nextPage);
+    }, 5000); // каждые 5 секунд
+  }
+
+  // Инициализация
+  items.forEach((item, index) => {
+    item.classList.add('hidden');
     if (index === currentPage) {
-      button.classList.add('is-current');
-    } else {
-      button.classList.remove('is-current');
+      item.classList.add('is-active');
+      item.classList.remove('hidden');
     }
   });
-}
-  setPageButtons(); // Call this function to create the page buttons initially
-  showPage(currentPage);
+
+  updateActiveButtonStates();
+  startAutoSlide();
 });

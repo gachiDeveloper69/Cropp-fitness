@@ -542,9 +542,27 @@ input[type=number] {
 .banner-images-item {
   width: 854px;/*571*/
   height: var(--banner-height);/*680*/
-  z-index: -10;
+  z-index: 1;
   display: block;
   margin-bottom: -20px;
+
+  transition: opacity 0.9s ease, transform 0.9s ease;
+  opacity: 0;
+  transform: translateY(calc(var(--banner-height) * -1)); /* начальное смещение вверх */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
+.banner-images-item.is-active {
+  opacity: 1;
+  transform: translateY(0); /* анимация въезда вниз */
+  z-index: 2;
+}
+.banner-images-item.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .banner-text {
