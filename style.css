@@ -898,19 +898,76 @@ input[type=number] {
 }
 
 .calculate {
-  padding-block: 146px;
+  --calculate-padding-block: 146px;
+  padding-block: var(--calculate-padding-block);
   background-color: var(--color-dark-alternate);
+  position: relative;
 }
 
 .calculate-inner {
   display: flex;
   align-items: center;
   column-gap: 36px;
+  
 }
 
 .calculate-body {
   flex-grow: 1;
   max-width: 627px;
+}
+
+.calculate-modal {
+  padding-left: 20px;
+  padding-top: 5px;
+  z-index: 1;
+  /*display: none;*/
+  margin-top: 18px;
+  position: absolute;
+  left: 15;
+  bottom: 20px;
+  background-color:black;
+  border: var(--border);
+  border-radius: var(--border-radius);
+  height: auto;
+  width: clamp(522px, 50%, 627px);
+  max-height: 84px;
+  overflow: hidden;
+}
+ 
+.calculate-modal-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between
+}
+
+.calculate-modal-text {
+  padding-block: 5px;
+}
+
+.close {
+  color: #ffffff;
+  /*float: inline-end;*/
+  justify-self: flex-end;
+  font-size: 28px;
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.calculate-stat {
+  margin-block: 0;
+  padding: 0;
+}
+
+.calculate-stat-text {
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+ 
+.close:hover {
+  color: gray;
+  transition: var(--transition-duration);
+  cursor: pointer;
 }
 
 .calculate-title:not(:last-child) {
@@ -1120,6 +1177,11 @@ input[type=number] {
   filter: invert(1); /*инвертировать цвет*/
 }
 
+.footer-soc1als-item:hover {
+  filter: invert(50%);
+  transition: var(--transition-duration);
+}
+
 .footer-extra {
   height: 52px;
   font-size: 14px;
@@ -1210,7 +1272,7 @@ input[type=number] {
   }
 
   .calculate {
-    padding-block: 100px;
+    --calculate-padding-block: 100px;
   }
 
   .calculate-form-body {
@@ -1249,6 +1311,16 @@ input[type=number] {
     column-gap: 30px;
   }
 
+  .calculate-modal {
+    margin-top: 0px;
+    bottom: 10px;
+    height: 70px;
+  }
+
+  .calculate-modal-icon {
+    height: 70px;
+    width: auto;
+      }
 
 }
 
@@ -1357,7 +1429,7 @@ input[type=number] {
   }
 
   .calculate {
-    padding-block: 60px;
+    --calculate-padding-block: 100px;
   }
 
   .calculate-inner {

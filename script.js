@@ -132,7 +132,6 @@ slider.addEventListener("scroll", () => {
   if (!isDragging) checkInfiniteScroll();
 });
 
-
 //пагинация картинок в секции banner
 document.addEventListener('DOMContentLoaded', function () {
   const content = document.querySelector('.banner-images-list');
@@ -190,3 +189,146 @@ document.addEventListener('DOMContentLoaded', function () {
   updateActiveButtonStates();
   startAutoSlide();
 });
+
+//BMI calc
+let activityFactor;
+switch (document.getElementById("activity-factor").value) {
+  case "Little": {
+    activityFactor = 1.2;
+    break;
+  }
+  case "Light": {
+    activityFactor = 1.375;
+    break;
+  }
+  case "Moderate": {
+    activityFactor = 1.55;
+    break;
+  }
+  case "Heavy": {
+    activityFactor = 1.725;
+    break;
+  }
+  case "Very heavy": {
+    activityFactor = 1.9;
+    break;
+  }
+  default: {
+    activityFactor = 1.2;
+    break;
+  }
+}
+
+let bmiStatus;
+
+//валидация ввода веса и роста
+document.querySelectorAll('.calculate-input-digits-float').forEach(item => {
+  item.addEventListener('keydown', function(e) {
+    const delimiter = /[.,]/;
+    if (
+      e.key === 'Backspace' || e.key === 'Delete' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' ||
+      e.key === 'Tab' || e.key === 'Home' || e.key === 'End'
+    ) return;
+    else if ((/[.,]/.test(e.key)) && (!/\d/.test(this.value) || /[.,]/.test(this.value)) ) {
+      e.preventDefault();  // Не допускаем повторения точек или точку в начале
+    }
+    else if ((/[.,]/.test(e.key)) && this.selectionStart > 0) {
+      return;  // можно добавить разделитель в середину
+    }
+    else if (!/[0-9]|\.|\,/.test(e.key)) {
+      e.preventDefault(); //не цифра или разделитель
+    }
+    else if (/[.,]\d{2,}/.test(this.value) && this.selectionStart > this.value.search(delimiter)) {
+      e.preventDefault();//не более 2 знаков после разделителя
+    }
+    else if (/^(?:\d{3,}|\d{3,}[.,]\d{2,})$/.test(this.value)) {
+      e.preventDefault(); //уже введено целое число из 3 цифр или дробное с целой частью из 2 цифр
+    }
+  });
+});
+// /^(?:\d{3,}|\d{3,}[.,]\d{2,})$/
+const age = document.querySelector('.calculate-input-digits-int')
+
+age.addEventListener('input', function(e) {
+  if (document.activeElement === age) {
+    console.log(document.activeElement.selectionStart);
+  }
+});
+/*
+document.addEventListener('focusin', () => {
+  const el = document.activeElement;
+  if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+    console.log(`В фокусе: ${el.className || el.name || el.id}`);
+    console.log('Курсор на позиции:', el.selectionStart);
+  }
+});
+*/
+/*
+document.querySelectorAll('.calculate-input-digits-float').forEach(input => {
+
+  input.addEventListener('keydown', function (e) {
+    const value = this.value;
+    const key = e.key;
+    const cursorPos = this.selectionStart;
+    const isNumber = /^[0-9]$/.test(key);
+    const isDot = key === '.' || key === ',';
+    const hasSeparator = value.includes('.') || value.includes(',');
+    const separatorIndex = value.search(/[.,]/);
+    const isAfterSeparator = separatorIndex !== -1 && cursorPos > separatorIndex;
+
+    // Разрешаем только системные клавиши (копирование, навигация и т.д.)
+    if (e.ctrlKey || e.metaKey || e.altKey || ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'].includes(key)) {
+      return;
+    }
+
+    // Приводим запятую к точке в момент ввода
+    if (isDot) {
+      // Блокируем точку, если она уже есть или если вводим её в начале строки
+      if (hasSeparator || cursorPos === 0 || !/\d/.test(value)) {
+        e.preventDefault();
+      }
+    }
+
+    // Ограничиваем на 2 цифры после точки
+    if (isNumber && isAfterSeparator) {
+      const afterPart = value.split(/[.,]/)[1] || '';
+      if (afterPart.length >= 2) {
+        e.preventDefault();
+      }
+    }
+  });
+
+  input.addEventListener('input', function () {
+    const original = this.value;
+
+    // Преобразуем все запятые в точки
+    let replaced = original.replace(/,/g, '.');
+
+    // Очищаем только цифры и одну точку
+    let cleaned = '';
+    let dotUsed = false;
+
+    for (let i = 0; i < replaced.length; i++) {
+      const char = replaced[i];
+      if (char === '.' && !dotUsed) {
+        cleaned += '.';
+        dotUsed = true;
+      } else if (/\d/.test(char)) {
+        cleaned += char;
+      }
+    }
+
+    // Обрезаем дробную часть до 2 знаков после точки
+    if (cleaned.includes('.')) {
+      const [intPart, decPart] = cleaned.split('.');
+      cleaned = intPart + '.' + decPart.slice(0, 2);
+    }
+
+    // Обновляем значение в поле
+    if (cleaned !== this.value) {
+      this.value = cleaned;
+    }
+  });
+});
+*/
+//убирать нули и точки в начале и точки в конце
