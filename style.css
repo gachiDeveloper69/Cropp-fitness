@@ -944,6 +944,33 @@ input[type=number] {
   padding-block: 5px;
 }
 
+.incorrect {
+  animation: shake 0.2s 2;
+  border-color: red;
+}
+
+.input-wrapper {
+  position: relative;
+}
+
+.input-wrapper::after {
+  content: attr(data-unit);
+  position: absolute;
+  right: 0.75em;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #666;
+  font-size: 0.9em;
+  pointer-events: none;
+  user-select: none;
+}
+
+@keyframes shake {
+  0%, 100% { translate: 0; }
+  25% { translate: 10px 0; }
+  50% { translate: -10px 0; }
+}
+
 .close {
   color: #ffffff;
   /*float: inline-end;*/

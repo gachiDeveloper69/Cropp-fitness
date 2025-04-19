@@ -1,3 +1,5 @@
+//BLOCK_1 слайдер в секции family
+
 const slider = document.querySelector(".slider-wrapper");
 const originalCount = slider.childElementCount;
 //const originalCount = 5;
@@ -132,8 +134,14 @@ slider.addEventListener("scroll", () => {
   if (!isDragging) checkInfiniteScroll();
 });
 
-//пагинация картинок в секции banner
+
+//BLOCK_2 пагинация картинок в секции banner
 document.addEventListener('DOMContentLoaded', function () {
+  //если, например, форма с сервером работает и туда уже пришли значения — чтобы сразу отрисовались cm/kg в калькуляторе bmi
+  window.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.calculate-input').forEach(showUnits);
+  });
+
   const content = document.querySelector('.banner-images-list');
   const items = Array.from(content.getElementsByTagName('li'));
   const buttons = document.querySelectorAll('.banner-pagination-button');
@@ -190,7 +198,8 @@ document.addEventListener('DOMContentLoaded', function () {
   startAutoSlide();
 });
 
-//BMI calc
+//BLOCK_3 BMI calc
+
 let activityFactor;
 switch (document.getElementById("activity-factor").value) {
   case "Little": {
@@ -222,6 +231,9 @@ switch (document.getElementById("activity-factor").value) {
 let bmiStatus;
 
 //валидация ввода веса и роста
+
+//первая версия валидации
+/*
 document.querySelectorAll('.calculate-input-digits-float').forEach(item => {
   item.addEventListener('keydown', function(e) {
     const delimiter = /[.,]/;
@@ -248,87 +260,173 @@ document.querySelectorAll('.calculate-input-digits-float').forEach(item => {
 });
 // /^(?:\d{3,}|\d{3,}[.,]\d{2,})$/
 const age = document.querySelector('.calculate-input-digits-int')
-
-age.addEventListener('input', function(e) {
-  if (document.activeElement === age) {
-    console.log(document.activeElement.selectionStart);
-  }
-});
-/*
-document.addEventListener('focusin', () => {
-  const el = document.activeElement;
-  if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-    console.log(`В фокусе: ${el.className || el.name || el.id}`);
-    console.log('Курсор на позиции:', el.selectionStart);
-  }
-});
 */
-/*
-document.querySelectorAll('.calculate-input-digits-float').forEach(input => {
 
-  input.addEventListener('keydown', function (e) {
-    const value = this.value;
-    const key = e.key;
-    const cursorPos = this.selectionStart;
-    const isNumber = /^[0-9]$/.test(key);
-    const isDot = key === '.' || key === ',';
-    const hasSeparator = value.includes('.') || value.includes(',');
-    const separatorIndex = value.search(/[.,]/);
-    const isAfterSeparator = separatorIndex !== -1 && cursorPos > separatorIndex;
+//добавляем единицы измерения для юзабилити
+function showUnits(input = {}) {
+  const wrapper = input.parentElement;
+  if (!wrapper) return;
+  let unit = '';
+  if (wrapper.classList.contains('height')) unit = 'cm';
+  else if (input.classList.contains('weight')) unit = 'kg';
+  else if (input.classList.contains('age')) unit = 'years';
 
-    // Разрешаем только системные клавиши (копирование, навигация и т.д.)
-    if (e.ctrlKey || e.metaKey || e.altKey || ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Home', 'End'].includes(key)) {
-      return;
-    }
+  if (input.value) {
+    wrapper.setAttribute('data-unit', unit);
+  } else {
+    wrapper.removeAttribute('data-unit');
+  }
+  /*
+  if (wrapper .classList.contains('height')) {
+    input.value? wrapper .setAttribute('data-unit', 'cm') : wrapper .removeAttribute('data-unit', 'cm');
+  } else if (input.classList.contains('weight')) {
+    input.value? wrapper .setAttribute('data-unit', 'kg') : wrapper .removeAttribute('data-unit', 'kg');
+  } else if (input.classList.contains('age')) {
+    input.value? wrapper .setAttribute('data-unit', 'years') : wrapper .removeAttribute('data-unit', 'years');
+  }
+  */
+}
+//пост-валидация (при снятии фокуса)
+const inputLimits = {
+  weight: { min: 30, max: 300},
+  height: { min: 50, max: 250},
+  age:    { min: 1, max: 120}
+};
 
-    // Приводим запятую к точке в момент ввода
-    if (isDot) {
-      // Блокируем точку, если она уже есть или если вводим её в начале строки
-      if (hasSeparator || cursorPos === 0 || !/\d/.test(value)) {
+
+function validateFinalValue(input, options = {}) {
+  const {
+    maxIntDigits = 3,
+    maxDecimalDigits = 2,
+  } = options;
+  const key = ['weight', 'height', 'age'].find(k => input.classList.contains(k));
+  if (!key) return;
+  const min = inputLimits[key].min;
+  const max = inputLimits[key].max;
+  
+  // Нормализуем запятую → точка, удаляем всё лишнее
+  let rawValue = input.value.trim().replace(',', '.').replace(/[^0-9.]/g, '');
+
+  if (rawValue === '') return; // Пусто — пропускаем
+  let decimalDigits = maxDecimalDigits;
+  if (/^\d+\.(0+)$/.test(rawValue)) {
+    decimalDigits = 0;
+  }
+  let num = parseFloat(rawValue);
+  if (isNaN(num)) {
+    input.classList.add('incorrect')
+    return;
+  }
+  num = parseFloat(num.toFixed(decimalDigits)); // сохраняем как число
+  input.value = num.toFixed(decimalDigits);
+  if (num < min || num > max) {
+    //input.value = '';
+    input.classList.add('incorrect')
+    return;
+  }
+  // Проверка длины целой и дробной части
+  const [intPart, decimalPart = ''] = rawValue.split('.');
+  if (intPart.length > maxIntDigits || decimalPart.length > maxDecimalDigits) {
+    input.classList.add('incorrect');
+    return;
+  }
+
+  return;
+ }
+//упаковываем валидацию в кастомную функцию
+function setupFloatInputValidation(selectorOrElements, options = {}) {
+  const {
+    maxIntDigits = 3,
+    maxDecimalDigits = 2,
+  } = options;
+
+  const elements = typeof selectorOrElements === 'string'
+    ? document.querySelectorAll(selectorOrElements)
+    : selectorOrElements;
+
+  const allowedKeys = [
+    'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight',
+    'Tab', 'Home', 'End'
+  ];
+
+  elements.forEach(input => {
+    
+    input.addEventListener('keydown', function (e) {
+      input.classList.remove('incorrect');//сбрасываем класс с ошибкой
+
+      const key = e.key;
+      const value = this.value;
+      const selectionStart = this.selectionStart;
+      const selectionEnd = this.selectionEnd;
+      const hasDelimiter = /[.,]/.test(value);
+      const delimiterIndex = value.search(/[.,]/);
+      const isSelection = selectionStart !== selectionEnd;
+
+      // Разрешённые спец. клавиши
+      if (allowedKeys.includes(key)) return;
+
+      // Целочисленный режим — запрет на ввод разделителя
+      if (maxDecimalDigits === 0 && /[.,]/.test(key)) {
         e.preventDefault();
+        return;
       }
-    }
 
-    // Ограничиваем на 2 цифры после точки
-    if (isNumber && isAfterSeparator) {
-      const afterPart = value.split(/[.,]/)[1] || '';
-      if (afterPart.length >= 2) {
+      // Разрешаем только цифры и (если не в целочисленном режиме) разделитель
+      if (!/[0-9]/.test(key) && (!/[.,]/.test(key) || maxDecimalDigits === 0)) {
         e.preventDefault();
+        return;
       }
-    }
-  });
 
-  input.addEventListener('input', function () {
-    const original = this.value;
-
-    // Преобразуем все запятые в точки
-    let replaced = original.replace(/,/g, '.');
-
-    // Очищаем только цифры и одну точку
-    let cleaned = '';
-    let dotUsed = false;
-
-    for (let i = 0; i < replaced.length; i++) {
-      const char = replaced[i];
-      if (char === '.' && !dotUsed) {
-        cleaned += '.';
-        dotUsed = true;
-      } else if (/\d/.test(char)) {
-        cleaned += char;
+      // Разделитель
+      if (/[.,]/.test(key)) {
+        // Нельзя вводить второй разделитель или в начало строки
+        if (!/\d/.test(value) || hasDelimiter) {
+          e.preventDefault();
+          return;
+        }
+        // Можно, если курсор не в начале
+        if (selectionStart === 0 && !isSelection) {
+          e.preventDefault();
+          return;
+        }
+        return; // разрешаем вставку
       }
-    }
 
-    // Обрезаем дробную часть до 2 знаков после точки
-    if (cleaned.includes('.')) {
-      const [intPart, decPart] = cleaned.split('.');
-      cleaned = intPart + '.' + decPart.slice(0, 2);
-    }
+      // Проверяем кол-во цифр до разделителя
+      const plainValue = value.replace(/[.,]/, '');
+      const intPart = hasDelimiter ? value.split(/[.,]/)[0] : value;
+      if (intPart.length >= maxIntDigits && (!hasDelimiter || selectionStart <= delimiterIndex) && !isSelection) {
+        e.preventDefault();
+        return;
+      }
 
-    // Обновляем значение в поле
-    if (cleaned !== this.value) {
-      this.value = cleaned;
-    }
+      // Проверяем кол-во цифр после разделителя
+      if (hasDelimiter && selectionStart > delimiterIndex) {
+        const decimalPart = value.split(/[.,]/)[1] || '';
+        if (decimalPart.length >= maxDecimalDigits && !isSelection) {
+          e.preventDefault();
+        }
+      }
+    });
+    // input — финальная проверка и тултипы
+    input.addEventListener('blur', () => {
+      validateFinalValue(input, options);
+    });
+    //добавляем ед. измерения
+    input.addEventListener('blur', () => {
+      showUnits(input);
+    });
   });
+}
+
+setupFloatInputValidation('.calculate-input-digits-float', {
+  maxIntDigits: 3,
+  maxDecimalDigits: 2
 });
-*/
-//убирать нули и точки в начале и точки в конце
+setupFloatInputValidation('.calculate-input-digits-int', {
+  maxIntDigits: 3,
+  maxDecimalDigits: 0
+});
+
+
+

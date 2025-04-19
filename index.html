@@ -325,41 +325,44 @@
                     </div>
                     <form class="calculate-form">
                         <div class="calculate-form-body">
-                            <label class="visually-hidden" for="height">Height</label>
-                            <input
-                                class="calculate-input input calculate-input-digits-float"
-                                id="height"
-                                type="text"
-                                inputmode="decimal"
-                                inputmode="numeric"
-                                placeholder="Height / cm"
-                                required
-                                onpaste="return false;"
-                            >
-
-                            <label class="visually-hidden" for="weight">Weight</label>
-                            <input
-                                class="calculate-input input calculate-input-digits-float"
-                                id="weight"
-                                type="text"
-                                inputmode="decimal"
-                                placeholder="Weight / kg"
-                                required
-                                onpaste="return false;"
-                            >
-
-                            <label class="visually-hidden" for="age">Age</label>
-                            <input
-                                class="calculate-input input calculate-input-digits-int"
-                                id="age"
-                                type="text"
-                                inputmode="decimal"
-                                placeholder="Age"
-                                required
-                                onpaste="return false;"
-                            >
-
-                            <label class="visually-hidden" for="gender">Age</label>
+                            <div class="input-wrapper height">
+                                <label class="visually-hidden" for="height">Height</label>
+                                <input
+                                    class="calculate-input input calculate-input-digits-float height"
+                                    id="height"
+                                    type="text"
+                                    inputmode="decimal"
+                                    inputmode="numeric"
+                                    placeholder="Height / cm"
+                                    required
+                                    onpaste="return false;"
+                                >
+                            </div>
+                            <div class="input-wrapper weight">
+                                <label class="visually-hidden" for="weight">Weight</label>
+                                <input
+                                    class="calculate-input input calculate-input-digits-float weight"
+                                    id="weight"
+                                    type="text"
+                                    inputmode="decimal"
+                                    placeholder="Weight / kg"
+                                    required
+                                    onpaste="return false;"
+                                >
+                            </div>
+                            <div class="input-wrapper age">
+                                <label class="visually-hidden" for="age">Age</label>
+                                <input
+                                    class="calculate-input input calculate-input-digits-int age"
+                                    id="age"
+                                    type="text"
+                                    inputmode="decimal"
+                                    placeholder="Age"
+                                    required
+                                    onpaste="return false;"
+                                >
+                            </div>
+                            <label class="visually-hidden" for="gender">Gender</label>
                             <select
                                 class="calculate-input input"
                                 id="gender"
