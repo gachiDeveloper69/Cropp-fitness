@@ -325,7 +325,7 @@
                     </div>
                     <form class="calculate-form">
                         <div class="calculate-form-body">
-                            <div class="input-wrapper height">
+                            <div class="input-wrapper wrapper-height">
                                 <label class="visually-hidden" for="height">Height</label>
                                 <input
                                     class="calculate-input input calculate-input-digits-float height"
@@ -334,11 +334,11 @@
                                     inputmode="decimal"
                                     inputmode="numeric"
                                     placeholder="Height / cm"
-                                    required
+                                    
                                     onpaste="return false;"
                                 >
                             </div>
-                            <div class="input-wrapper weight">
+                            <div class="input-wrapper wrapper-weight">
                                 <label class="visually-hidden" for="weight">Weight</label>
                                 <input
                                     class="calculate-input input calculate-input-digits-float weight"
@@ -346,11 +346,11 @@
                                     type="text"
                                     inputmode="decimal"
                                     placeholder="Weight / kg"
-                                    required
+                                    
                                     onpaste="return false;"
                                 >
                             </div>
-                            <div class="input-wrapper age">
+                            <div class="input-wrapper wrapper-age">
                                 <label class="visually-hidden" for="age">Age</label>
                                 <input
                                     class="calculate-input input calculate-input-digits-int age"
@@ -358,34 +358,35 @@
                                     type="text"
                                     inputmode="decimal"
                                     placeholder="Age"
-                                    required
+                                    
                                     onpaste="return false;"
                                 >
                             </div>
-                            <label class="visually-hidden" for="gender">Gender</label>
-                            <select
-                                class="calculate-input input"
-                                id="gender"
-                                required
-                            >
-                            <option value="" disabled selected>Gender</option><!-- чтобы по умолчанию было значение Gender как в макете -->
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            </select>
-
-                            <label class="visually-hidden" for="activity-factor">Age</label>
-                            <select
-                                class="calculate-input wide input"
-                                id="activity-factor"
-                                required
-                            >
-                            <option value="" disabled selected>Select an activity factor:</option><!-- чтобы по умолчанию было значение Select an activity factor: как в макете -->
-                            <option value="Little">Little or no Exercise / desk job</option>
-                            <option value="Light">Light exercise / sports 1 - 3 days/ week</option>
-                            <option value="Moderate">Moderate Exercise, sports 3 - 5 days / week</option>
-                            <option value="Heavy">Heavy Exercise / sports 6 - 7 days / week</option>
-                            <option value="Very heavy">Very heavy exercise/ physical job / training 2 x / day</option>
-                            </select>
+                            <div class="input-wrapper wrapper-gender">
+                                <label class="visually-hidden" for="gender">Gender</label>
+                                <select
+                                    class="calculate-input input gender"
+                                    id="gender"
+                                >
+                                <option value="" disabled selected>Gender</option><!-- чтобы по умолчанию было значение Gender как в макете -->
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                </select>
+                            </div>
+                            <div class="input-wrapper wrapper-activity">
+                                <label class="visually-hidden" for="activity-factor">Activity</label>
+                                <select
+                                    class="calculate-input wide input activity"
+                                    id="activity-factor"
+                                >
+                                <option value="" disabled selected>Select an activity factor:</option><!-- чтобы по умолчанию было значение Select an activity factor: как в макете -->
+                                <option value="Little">Little or no Exercise / desk job</option>
+                                <option value="Light">Light exercise / sports 1 - 3 days/ week</option>
+                                <option value="Moderate">Moderate Exercise, sports 3 - 5 days / week</option>
+                                <option value="Heavy">Heavy Exercise / sports 6 - 7 days / week</option>
+                                <option value="Very heavy">Very heavy exercise/ physical job / training 2 x / day</option>
+                                </select>
+                            </div>
                         </div>
                         <button class="calculate-form-button button transparent" type="submit">
                             Calculate

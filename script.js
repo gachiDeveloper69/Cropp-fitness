@@ -141,6 +141,19 @@ document.addEventListener('DOMContentLoaded', function () {
   window.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.calculate-input').forEach(showUnits);
   });
+  // применяем стили к плейсхолдерам в полях с выбором
+  document.querySelectorAll('select.input').forEach(select => {
+    const updateSelectStyle = () => {
+      if (!select.value) {
+        select.classList.add('placeholder');
+      } else {
+        select.classList.remove('placeholder');
+      }
+    };
+  
+    select.addEventListener('change', updateSelectStyle);
+    updateSelectStyle(); 
+  });
 
   const content = document.querySelector('.banner-images-list');
   const items = Array.from(content.getElementsByTagName('li'));
@@ -199,39 +212,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 //BLOCK_3 BMI calc
-
-let activityFactor;
-switch (document.getElementById("activity-factor").value) {
-  case "Little": {
-    activityFactor = 1.2;
-    break;
-  }
-  case "Light": {
-    activityFactor = 1.375;
-    break;
-  }
-  case "Moderate": {
-    activityFactor = 1.55;
-    break;
-  }
-  case "Heavy": {
-    activityFactor = 1.725;
-    break;
-  }
-  case "Very heavy": {
-    activityFactor = 1.9;
-    break;
-  }
-  default: {
-    activityFactor = 1.2;
-    break;
-  }
-}
-
-let bmiStatus;
-
 //валидация ввода веса и роста
-
 //первая версия валидации
 /*
 document.querySelectorAll('.calculate-input-digits-float').forEach(item => {
@@ -267,10 +248,10 @@ function showUnits(input = {}) {
   const wrapper = input.parentElement;
   if (!wrapper) return;
   let unit = '';
-  if (wrapper.classList.contains('height')) unit = 'cm';
+  if (input.classList.contains('height')) unit = 'cm';
   else if (input.classList.contains('weight')) unit = 'kg';
   else if (input.classList.contains('age')) unit = 'years';
-
+  console.log(unit);
   if (input.value) {
     wrapper.setAttribute('data-unit', unit);
   } else {
@@ -286,13 +267,63 @@ function showUnits(input = {}) {
   }
   */
 }
+//тултипы для ошибок
+function markIncorrect(wrapper, key) {
+  if (!wrapper) return;
+  wrapper.classList.add('incorrect');
+
+  switch (key) {
+    case 'weight':
+      wrapper.setAttribute('data-error', 'enter a value between 30 and 300 kg');
+      break;
+    case 'height':
+      wrapper.setAttribute('data-error', 'enter a value between 50 and 250 cm');
+      break;
+    case 'age':
+      wrapper.setAttribute('data-error', 'enter a value between 1 and 120 years');
+      break;
+    case 'gender':
+      wrapper.setAttribute('data-error', 'Please select gender');
+      break;
+    case 'activity':
+    wrapper.setAttribute('data-error', 'Please choose activity level');
+      break;
+  }
+}
 //пост-валидация (при снятии фокуса)
 const inputLimits = {
   weight: { min: 30, max: 300},
   height: { min: 50, max: 250},
   age:    { min: 1, max: 120}
 };
+//финальная валидация перед отправкой
+const onSubmitValidate = (form) => {
+  const inputs = {
+    height: form.querySelector('.height'),
+    weight: form.querySelector('.weight'),
+    age: form.querySelector('.age'),
+    gender: form.querySelector('.gender'),
+    activity: form.querySelector('.activity'),
+  };
 
+  let isValid = true;
+
+  Object.entries(inputs).forEach(([key, input]) => {
+    if (!input || input.value.trim() === '') {
+      const wrapper = input.closest('.input-wrapper');
+      markIncorrect(wrapper, key);
+      isValid = false;
+    }
+    //навешиваем обработчик на сброс старых ошибок
+    input.addEventListener('change', () => {
+      const wrapper = input.closest('.input-wrapper');
+      input.classList.remove('incorrect');
+      wrapper?.classList.remove('incorrect');
+      wrapper?.removeAttribute('data-error');
+    });
+  });
+  return isValid;
+};
 
 function validateFinalValue(input, options = {}) {
   const {
@@ -303,31 +334,36 @@ function validateFinalValue(input, options = {}) {
   if (!key) return;
   const min = inputLimits[key].min;
   const max = inputLimits[key].max;
+  const wrapper = input.closest('.input-wrapper');
   
   // Нормализуем запятую → точка, удаляем всё лишнее
   let rawValue = input.value.trim().replace(',', '.').replace(/[^0-9.]/g, '');
 
   if (rawValue === '') return; // Пусто — пропускаем
+  console.log(rawValue);
   let decimalDigits = maxDecimalDigits;
-  if (/^\d+\.(0+)$/.test(rawValue)) {
+  if (/^\d+\.(0+)$/.test(rawValue) || Number.isInteger(parseFloat(rawValue))) {
     decimalDigits = 0;
+    console.log(decimalDigits);
   }
   let num = parseFloat(rawValue);
   if (isNaN(num)) {
-    input.classList.add('incorrect')
+    markIncorrect(wrapper, key);
+    //input.classList.add('incorrect')
     return;
   }
   num = parseFloat(num.toFixed(decimalDigits)); // сохраняем как число
   input.value = num.toFixed(decimalDigits);
   if (num < min || num > max) {
-    //input.value = '';
-    input.classList.add('incorrect')
+    markIncorrect(wrapper, key);
+    //input.classList.add('incorrect')
     return;
   }
   // Проверка длины целой и дробной части
   const [intPart, decimalPart = ''] = rawValue.split('.');
   if (intPart.length > maxIntDigits || decimalPart.length > maxDecimalDigits) {
-    input.classList.add('incorrect');
+    markIncorrect(wrapper, key);
+    //input.classList.add('incorrect');
     return;
   }
 
@@ -352,7 +388,12 @@ function setupFloatInputValidation(selectorOrElements, options = {}) {
   elements.forEach(input => {
     
     input.addEventListener('keydown', function (e) {
-      input.classList.remove('incorrect');//сбрасываем класс с ошибкой
+      //сбрасываем старые ошибки
+      const wrapper = input.closest('.input-wrapper');
+      input.classList.remove('incorrect');
+      wrapper?.classList.remove('incorrect');
+      wrapper?.removeAttribute('data-error');
+      //input.classList.remove('incorrect');//сбрасываем класс с ошибкой
 
       const key = e.key;
       const value = this.value;
@@ -428,5 +469,43 @@ setupFloatInputValidation('.calculate-input-digits-int', {
   maxDecimalDigits: 0
 });
 
-
+let bmiStatus;
+let activityFactor;
+switch (document.getElementById("activity-factor").value) {
+  case "Little": {
+    activityFactor = 1.2;
+    break;
+  }
+  case "Light": {
+    activityFactor = 1.375;
+    break;
+  }
+  case "Moderate": {
+    activityFactor = 1.55;
+    break;
+  }
+  case "Heavy": {
+    activityFactor = 1.725;
+    break;
+  }
+  case "Very heavy": {
+    activityFactor = 1.9;
+    break;
+  }
+  default: {
+    activityFactor = 1.2;
+    break;
+  }
+}
+/*
+function countBmi(form) {
+  onSubmitValidate(form);
+}
+countBmi(document.querySelector('.calculate-form'));
+*/
+document.querySelector('.calculate-form').addEventListener('submit', function (e) {
+  if (!onSubmitValidate(this)) {
+    e.preventDefault();
+  }
+});
 

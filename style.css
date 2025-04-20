@@ -415,7 +415,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .input::placeholder,
-select.input:invalid
+select.input:invalid,
+select.input.placeholder
 {
   color: rgb(109, 108, 108);
 }
@@ -424,6 +425,65 @@ select.input:invalid
   border-color: gray;
   transition: var(--transition-duration);
 }
+input:-webkit-autofill {
+  background-color: transparent !important;
+  color: #fff !important;
+  box-shadow: 0 0 0px 1000px var(--color-dark-alternate) inset !important;
+  -webkit-text-fill-color: #fff !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/*тултипы*/
+.input-wrapper.incorrect::before {
+  content: attr(data-error);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #f44336;
+  color: #fff;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  border-radius: 4px;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+/* Указатель */
+.input-wrapper.incorrect::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 6px solid transparent;
+}
+
+/* Нечётные поля — слева */
+.input-wrapper:nth-child(odd).incorrect::before {
+  left: auto;
+  right: 100%;
+  margin-right: 8px;
+}
+
+.input-wrapper:nth-child(odd).incorrect::after {
+  right: calc(100% - 2px);
+  border-left-color: #f44336;
+}
+
+/* Чётные поля — справа */
+.input-wrapper:nth-child(even).incorrect::before {
+  left: 100%;
+  margin-left: 8px;
+}
+
+.input-wrapper:nth-child(even).incorrect::after {
+  left: calc(100% - 2px);
+  border-right-color: #f44336;
+}
+/*тултипы конец*/
+
 
 .input:focus {
   color: var(--color-dark);
@@ -946,6 +1006,11 @@ input[type=number] {
 
 .incorrect {
   animation: shake 0.2s 2;
+  border-color: red;
+}
+
+.incorrect > input,
+.incorrect > select {
   border-color: red;
 }
 
