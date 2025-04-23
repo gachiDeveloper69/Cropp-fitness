@@ -251,7 +251,6 @@ function showUnits(input = {}) {
   if (input.classList.contains('height')) unit = 'cm';
   else if (input.classList.contains('weight')) unit = 'kg';
   else if (input.classList.contains('age')) unit = 'years';
-  console.log(unit);
   if (input.value) {
     wrapper.setAttribute('data-unit', unit);
   } else {
@@ -268,10 +267,17 @@ function showUnits(input = {}) {
   */
 }
 //тултипы для ошибок
+let isValid = true;
+//ошибка валидации для скрытия модалки
+function setError() {
+  isValid = false;
+  document.querySelector('.calculate-modal').classList.add('visually-hidden');//доделать
+};
+
 function markIncorrect(wrapper, key) {
   if (!wrapper) return;
   wrapper.classList.add('incorrect');
-
+  
   switch (key) {
     case 'weight':
       wrapper.setAttribute('data-error', 'enter a value between 30 and 300 kg');
@@ -289,7 +295,9 @@ function markIncorrect(wrapper, key) {
     wrapper.setAttribute('data-error', 'Please choose activity level');
       break;
   }
+  setError();
 }
+
 //пост-валидация (при снятии фокуса)
 const inputLimits = {
   weight: { min: 30, max: 300},
@@ -306,13 +314,11 @@ const onSubmitValidate = (form) => {
     activity: form.querySelector('.activity'),
   };
 
-  let isValid = true;
-
   Object.entries(inputs).forEach(([key, input]) => {
     if (!input || input.value.trim() === '') {
       const wrapper = input.closest('.input-wrapper');
       markIncorrect(wrapper, key);
-      isValid = false;
+      //isValid = false;
     }
     //навешиваем обработчик на сброс старых ошибок
     input.addEventListener('change', () => {
@@ -340,11 +346,9 @@ function validateFinalValue(input, options = {}) {
   let rawValue = input.value.trim().replace(',', '.').replace(/[^0-9.]/g, '');
 
   if (rawValue === '') return; // Пусто — пропускаем
-  console.log(rawValue);
   let decimalDigits = maxDecimalDigits;
   if (/^\d+\.(0+)$/.test(rawValue) || Number.isInteger(parseFloat(rawValue))) {
     decimalDigits = 0;
-    console.log(decimalDigits);
   }
   let num = parseFloat(rawValue);
   if (isNaN(num)) {
@@ -393,6 +397,7 @@ function setupFloatInputValidation(selectorOrElements, options = {}) {
       input.classList.remove('incorrect');
       wrapper?.classList.remove('incorrect');
       wrapper?.removeAttribute('data-error');
+      isValid = true;
       //input.classList.remove('incorrect');//сбрасываем класс с ошибкой
 
       const key = e.key;
@@ -459,6 +464,61 @@ function setupFloatInputValidation(selectorOrElements, options = {}) {
     });
   });
 }
+const countBmi = (form) => { 
+  
+  const inputs = {
+    height: parseFloat(form.querySelector('.height').value),
+    weight: parseFloat(form.querySelector('.weight').value),
+    age: parseFloat(form.querySelector('.age').value),
+    gender: form.querySelector('.gender').value,
+    activity: form.querySelector('.activity').value,
+  };
+  const activities = {
+    little: 1.2,
+    light: 1.375,
+    moderate: 1.55,
+    heavy: 1.725,
+    veryHeavy: 1.9,
+  };
+  const genders = {
+    male: {base: 66, weightCoef: 13.7, heightCoef: 5, ageCoef: 6.8},
+    female: {base: 655, weightCoef: 9.6, heightCoef: 1.8, ageCoef: 4.7},
+  };
+  const status = {
+    Underweight: {min: 0, max: 18.4, src: "./icons/underweight.svg"},
+    Healthy: {min: 18.5, max: 24.9, src: "./icons/healthy.svg"},
+    Overweight: {min: 25.0, max: 29.9, src: "./icons/overweight.svg"},
+    Obese: {min: 30, max: 999, src: "./icons/obese.svg"},
+  };
+  let bmiOutput = document.querySelector('.bmi-value-output');
+  let bmrOutput = document.querySelector('.bmr-value-output');
+  let bmraOutput = document.querySelector('.bmra-value-output');
+  let statOutput = document.querySelector('.stat-output');
+  const icon = document.querySelector('.calculate-modal-icon');
+   
+  /*
+  Harris Benedict formula: 
+  Women: BMR = 655 + (9.6 x weight in kg) + (1.8 x height in cm) - (4.7 x age in years)
+  Men: BMR = 66 + (13.7 x weight in kg) + (5 x height in cm) - (6.8 x age in years)
+  */
+  const bmr = genders[inputs.gender].base + (genders[inputs.gender].weightCoef * inputs.weight) + (genders[inputs.gender].heightCoef * inputs.height) - (genders[inputs.gender].ageCoef * inputs.age);
+  bmrOutput.innerHTML  = bmr.toFixed(1);
+  
+  const bmra = (bmr * activities[inputs.activity]);
+  bmraOutput.innerHTML = bmra.toFixed(1);
+
+  const bmi = inputs.weight / (Math.pow(inputs.height/100, 2));//height in meters
+  bmiOutput.innerHTML = bmi.toFixed(1);
+
+  Object.entries(status).forEach(([key, status]) => {
+    if (bmi >= status.min &&  bmi <= status.max) {
+      statOutput.innerHTML = String(key);
+      icon.setAttribute('src', status.src);
+    }
+  });
+  document.querySelector('.calculate-modal').classList.remove('visually-hidden');
+}
+
 
 setupFloatInputValidation('.calculate-input-digits-float', {
   maxIntDigits: 3,
@@ -469,43 +529,16 @@ setupFloatInputValidation('.calculate-input-digits-int', {
   maxDecimalDigits: 0
 });
 
-let bmiStatus;
-let activityFactor;
-switch (document.getElementById("activity-factor").value) {
-  case "Little": {
-    activityFactor = 1.2;
-    break;
-  }
-  case "Light": {
-    activityFactor = 1.375;
-    break;
-  }
-  case "Moderate": {
-    activityFactor = 1.55;
-    break;
-  }
-  case "Heavy": {
-    activityFactor = 1.725;
-    break;
-  }
-  case "Very heavy": {
-    activityFactor = 1.9;
-    break;
-  }
-  default: {
-    activityFactor = 1.2;
-    break;
-  }
-}
-/*
-function countBmi(form) {
-  onSubmitValidate(form);
-}
-countBmi(document.querySelector('.calculate-form'));
-*/
-document.querySelector('.calculate-form').addEventListener('submit', function (e) {
-  if (!onSubmitValidate(this)) {
+document.querySelector('.calculate-form-button').addEventListener('click', function (e) {
+  const form = document.querySelector('.calculate-form');
+  if (!onSubmitValidate(form)) {
     e.preventDefault();
+  }
+  else {
+    countBmi(form);
   }
 });
 
+document.querySelector('.close-modal').addEventListener('click', function (e) {
+  document.querySelector('.calculate-modal').classList.add('visually-hidden');
+});

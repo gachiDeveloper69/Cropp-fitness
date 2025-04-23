@@ -1002,6 +1002,7 @@ input[type=number] {
 
 .calculate-modal-text {
   padding-block: 5px;
+  line-height: 1.2;
 }
 
 .incorrect {
@@ -1036,7 +1037,7 @@ input[type=number] {
   50% { translate: -10px 0; }
 }
 
-.close {
+.close-modal {
   color: #ffffff;
   /*float: inline-end;*/
   justify-self: flex-end;
@@ -1056,7 +1057,7 @@ input[type=number] {
   text-transform: uppercase;
 }
  
-.close:hover {
+.close-modal:hover {
   color: gray;
   transition: var(--transition-duration);
   cursor: pointer;
